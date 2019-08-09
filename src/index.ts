@@ -12,6 +12,7 @@ import CheckPermissionStore from './CheckPermissionStore';
 import AppConfigStore from './AppConfigStore';
 import DomainCommand from './DomainCommand';
 import DomainEvent from './DomainEvent';
+import errors from './errors';
 
 export {
   debug,
@@ -27,5 +28,6 @@ export {
   CheckPermissionStore,
   AppConfigStore,
   DomainCommand,
-  DomainEvent
+  DomainEvent,
+  errors
 };
