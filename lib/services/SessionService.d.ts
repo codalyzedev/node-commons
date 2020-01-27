@@ -19,8 +19,8 @@ declare class SessionService {
         httpOnly: boolean;
         path: string;
     };
-    getUserById(userId: string): Promise<any>;
-    createSession(userId: string, ua: string | null, ip: string | null): Promise<{
+    getUserById(userId: string, delegateeId: string): Promise<any>;
+    createSession(userId: string, delegateeId: string, ua: string | null, ip: string | null): Promise<{
         sessionId: any;
         jwt: string;
         user: any;
@@ -33,5 +33,6 @@ declare class SessionService {
     getUserFromSession(token: string): Promise<any> | null;
     logout(sessionId: string): Promise<null>;
     getActiveSessionsFor(userId: string): Promise<any[]>;
+    getSessionById(sessionId: string): Promise<any>;
 }
 export default SessionService;

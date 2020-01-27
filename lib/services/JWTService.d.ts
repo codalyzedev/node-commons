@@ -1,6 +1,7 @@
 /// <reference types="node" />
 export interface IJWTPayload {
     userId: string;
+    delegateeId: string;
 }
 export default class JWTService {
     expiresIn: number;
