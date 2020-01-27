@@ -5,5 +5,5 @@ interface IHttpServerOptions {
     disableLogger: boolean;
     disableBodyParser: boolean;
 }
-declare const createHttpServer: (serverName: string, middlewares?: express.RequestHandler[], options?: IHttpServerOptions) => http.Server;
+declare const createHttpServer: (serverName: string, middlewares?: express.RequestHandler<import("express-serve-static-core").ParamsDictionary>[], options?: IHttpServerOptions) => http.Server;
 export default createHttpServer;

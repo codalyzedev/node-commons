@@ -2,7 +2,7 @@ class ValidationError extends Error {
   code: Number
   response: any
 
-  constructor(e) {
+  constructor(e: string) {
     super(e);
     this.name = "VALIDATION_ERROR";
     this.code = 400;
@@ -14,7 +14,7 @@ class Unauthorised extends Error {
   code: Number
   response: any
 
-  constructor(e) {
+  constructor(e: string) {
     super(e);
     this.name = "UNAUTHORISED";
     this.code = 401;

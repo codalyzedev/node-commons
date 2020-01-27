@@ -12,4 +12,5 @@ import CheckPermissionStore from './CheckPermissionStore';
 import AppConfigStore from './AppConfigStore';
 import DomainCommand from './DomainCommand';
 import DomainEvent from './DomainEvent';
-export { debug, createHttpServer, mw, validators, createPgConnection, wrapExpressMiddleWare, rabbit, JWTService, SessionService, RedisClient, CheckPermissionStore, AppConfigStore, DomainCommand, DomainEvent };
+import errors from './errors';
+export { debug, createHttpServer, mw, validators, createPgConnection, wrapExpressMiddleWare, rabbit, JWTService, SessionService, RedisClient, CheckPermissionStore, AppConfigStore, DomainCommand, DomainEvent, errors };

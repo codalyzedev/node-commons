@@ -7,13 +7,13 @@ declare class SessionService {
     jwtExpiresIn: number;
     redisClient: RedisClient;
     constructor(dbConn: pgPromise.IDatabase<any>, redisClient: RedisClient);
-    readonly jwtCookieOptions: {
+    get jwtCookieOptions(): {
         maxAge: number;
         secure: boolean;
         httpOnly: boolean;
         path: string;
     };
-    readonly refreshCookieOptions: {
+    get refreshCookieOptions(): {
         maxAge: number;
         secure: boolean;
         httpOnly: boolean;
