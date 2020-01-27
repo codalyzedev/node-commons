@@ -4,7 +4,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 export interface IJWTPayload {
-  userId: string
+  userId: string,
+  delegateeId: string
 };
 
 export default class JWTService {

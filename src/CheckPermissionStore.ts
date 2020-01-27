@@ -36,8 +36,8 @@ class CheckPermissionStore {
     return result ? (result.enabled === true ? true : false) : false;
   }
 
-  async checkPermission(roleId : string, userId : string, permission : string) {
-    const userInRedis = await this.redisClient.getObject(`user:${userId}`);
+  async checkPermission(roleId : string, userId : string, delegateeId: string, permission : string) {
+    const userInRedis = await this.redisClient.getObject(`user:${userId}del:${delegateeId}`);
 
     if (userInRedis) {
       const permItem = userInRedis.permissions.find((perm: any) => perm.permission_name === permission);

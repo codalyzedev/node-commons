@@ -35,8 +35,8 @@ class SessionService {
     };
   }
 
-  async getUserById (userId: string) {
-    const userInRedis = await this.redisClient.getObject(`user:${userId}`);
+  async getUserById (userId: string, delegateeId: string) {
+    const userInRedis = await this.redisClient.getObject(`user:${userId}del:${delegateeId}`);
 
     if (userInRedis) {
       return userInRedis;
@@ -52,6 +52,27 @@ class SessionService {
           ON user_roles.role_id = users.role_id
         WHERE user_id = $1
       `, userId);
+
+      if (user) {
+        user.activeDelegations = await t.any(`
+          SELECT
+            u.*,
+            (u.first_name || ' '  || u.last_name) as name
+          FROM
+            user_delegations d
+          INNER JOIN users u ON d.delegator_id = u.user_id
+          WHERE d.delegatee_id = $1 AND d.is_active = true
+        `, delegateeId);
+      }
+
+      if (userId !== delegateeId) {
+        const delegatee = await t.one(`
+          SELECT (u.first_name || ' '  || u.last_name) as name
+          FROM users u WHERE u.user_id = $1
+        `, delegateeId);
+
+        user.delegateeName = delegatee.name;
+      }
 
       const permissions = await t.any(`
         SELECT
@@ -72,29 +93,30 @@ class SessionService {
 
       return {
         ...user,
+        delegateeId,
         permissions
       };
     });
 
-    this.redisClient.setObjectWithExpiration(`user:${userId}`, userWithPermissions, 60 * 60);
+    this.redisClient.setObjectWithExpiration(`user:${userId}del:${delegateeId}`, userWithPermissions, 60 * 60);
 
     return userWithPermissions;
   }
 
-  async createSession (userId: string, ua: string | null, ip: string | null) {
+  async createSession (userId: string, delegateeId: string, ua: string | null, ip: string | null) {
     const sessionId = uuid.v4();
 
     const session: any = await this.db.one(`
       INSERT INTO sessions
-      (session_id, user_id, expires_at, user_agent, ip_address)
+      (session_id, user_id, delegatee_id, expires_at, user_agent, ip_address)
       VALUES
-      ($1, $2, NOW() + interval '30 minutes', $3, $4)
+      ($1, $2, $3, NOW() + interval '30 minutes', $3, $4)
       RETURNING *
-    `, [sessionId, userId, ua, ip]);
+    `, [sessionId, userId, delegateeId, ua, ip]);
 
-    const jwt = this.jwtService.sign({userId});
+    const jwt = this.jwtService.sign({userId, delegateeId});
 
-    return {sessionId: session.session_id, jwt, user: await this.getUserById(userId)};
+    return {sessionId: session.session_id, jwt, user: await this.getUserById(userId, delegateeId)};
   }
 
   async generateRefreshToken (sessionId: string) {
@@ -114,10 +136,11 @@ class SessionService {
     `, sessionId);
 
     const userId = session.user_id;
+    const delegateeId = session.delegatee_id;
 
-    const jwt = this.jwtService.sign({userId});
+    const jwt = this.jwtService.sign({userId, delegateeId});
 
-    return {sessionId: session.id, jwt, user: await this.getUserById(userId)};
+    return {sessionId: session.id, jwt, user: await this.getUserById(userId, delegateeId)};
   }
 
   getUserFromSession (token: string) {
@@ -127,7 +150,7 @@ class SessionService {
 
     try {
       const decoded: any = this.jwtService.verify(token);
-      return this.getUserById(decoded.userId);
+      return this.getUserById(decoded.userId, decoded.delegateeId);
     } catch (e) {
       if (e.name === 'TokenExpiredError' || e.name === 'JsonWebTokenError' || e.name === 'NotBeforeError') {
         return null;
@@ -148,6 +171,12 @@ class SessionService {
     return this.db.any(`
       SELECT * FROM active_sessions WHERE user_id = $1
     `, userId);
+  }
+
+  getSessionById (sessionId: string) {
+    return this.db.oneOrNone(`
+      SELECT * FROM sessions WHERE session_id = $1
+    `, sessionId);
   }
 }
 
