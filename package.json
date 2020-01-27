@@ -1,7 +1,7 @@
 {
-  "name": "commons",
-  "version": "0.0.1",
-  "description": "Brokerage iq platform for DSP",
+  "name": "node-common-utils",
+  "version": "0.0.3",
+  "description": "Common utilities for nodejs",
   "main": "lib/index.js",
   "scripts": {
     "tsc": "tsc",
@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/codalyzedev/brokerage-iq-test.git"
+    "url": "git+ssh://git@github.com/codalyzedev/node-commons.git"
   },
   "author": "codalyzedev",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/codalyzedev/brokerage-iq-test/issues"
+    "url": "https://github.com/codalyzedev/node-commons/issues"
   },
-  "homepage": "https://github.com/codalyzedev/brokerage-iq-test#readme",
+  "homepage": "https://github.com/codalyzedev/node-commons#readme",
   "dependencies": {
     "@types/amqplib": "^0.5.11",
     "@types/bluebird": "^3.5.26",
