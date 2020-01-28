@@ -41,6 +41,10 @@ logger.token('body', (req) => {
         return '{}';
       }
     }
+
+    if (req.disableBody === true) {
+      return '{}'
+    }
   
     return JSON.stringify(maskSensitiveData(req.body));
   } catch (e) {
