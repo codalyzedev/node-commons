@@ -8,6 +8,6 @@ declare class CheckPermissionsMw {
     appLockActionMap: any;
     constructor(db: any, redisClient: RedisClient);
     handler: (requestedPermissions: string[]) => (req: express.Request<import("express-serve-static-core").ParamsDictionary>, res: express.Response, next: express.NextFunction) => Promise<void>;
-    isPermissionAllowed(permission: string, roleId: string, userId: string): Promise<any>;
+    isPermissionAllowed(permission: string, roleId: string, userId: string, delegateeId: string): Promise<any>;
 }
 export default CheckPermissionsMw;
